@@ -9,5 +9,5 @@ follow these steps [here](https://github.com/CastHash532/vscode-in-docker)
 docker run --privileged -d \
             -p 8080:8080 -p 8888:5901 -p 9080:22 \
             -v /bin/vscode:/bin/vscode -v $(pwd)/sdk:/opt/android-sdk \
-            -it thyrlian/android-sdk-vnc /bin/vscode/code-server --auth none
+            thyrlian/android-sdk-vnc /bin/vscode/code-server --auth none
 ```
