@@ -1,16 +1,19 @@
 FROM mingc/android-build-box
+
 # Install vnc# install and configure VNC server
-ENV USER root
-ENV DISPLAY :1
-EXPOSE 5901
-ADD vncpass.sh /tmp/
-ADD watchdog.sh /usr/local/bin/
-ADD supervisord_vncserver.conf /etc/supervisor/conf.d/
+ENV DEBIAN_FRONTEND noninteractive
+
+ADD startup.sh /startup.sh
+
 RUN apt-get update -y && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends xfce4 xfce4-goodies xfonts-base dbus-x11 tightvncserver expect && \
-    chmod +x /tmp/vncpass.sh; sync && \
-    /tmp/vncpass.sh && \
-    rm /tmp/vncpass.sh && \
-    apt-get remove -y expect && apt-get autoremove -y && \
-    FILE_SSH_ENV="/root/.ssh/environment" && \
-    echo "DISPLAY=:1" >> $FILE_SSH_ENV
+    apt-get install -y git x11vnc wget python python-numpy unzip Xvfb firefox openbox geany menu && \
+    cd /root && git clone https://github.com/kanaka/noVNC.git && \
+    cd noVNC/utils && git clone https://github.com/kanaka/websockify websockify && \
+    cd /root && \
+    chmod 0755 /startup.sh && \
+    apt-get autoclean && \
+    apt-get autoremove && \
+    rm -rf /var/lib/apt/lists/*
+
+CMD /startup.sh
+EXPOSE 6080
